@@ -1,0 +1,9 @@
+target/
+data/
+.idea/
+*.iml
+.vscode/
+*.log
+.DS_Store
+desktop.ini
+Thumbs.db

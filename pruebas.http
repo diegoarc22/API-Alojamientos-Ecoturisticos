@@ -1,0 +1,8 @@
+### Fichero de pruebas de la practica final (rubrica: TODOS los casos de exito y de error)
+### Cada uno anade aqui las peticiones de su parte. Separar con ###
+
+### [DIEGO] Entorno activo
+GET http://localhost:8080/api/alojamientos/entorno
+
+### [DIEGO] Listar todos
+GET http://localhost:8080/api/alojamientos
