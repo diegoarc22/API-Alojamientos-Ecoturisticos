@@ -12,6 +12,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Schema(description = "Datos para registrar un alojamiento")
 public class AlojamientoCreacionDTO {
     @Schema(description = "Codigo de Registro", example = "ECO-0001")
     @NotBlank(message = "El código de registro es obligatorio")
@@ -25,7 +26,7 @@ public class AlojamientoCreacionDTO {
 
     @Schema(description = "Tipo de Alojamiento", example = "CASA_RURAL")
     @NotBlank(message = "El tipo es obligatorio")
-    @Pattern(regexp = "^(CABANA|GLAMPING|CASA_RURAL)$", message = "El tipo debe ser CABAÑA, GLAMPING o CASA_RURAL")
+    @Pattern(regexp = "^(CABANA|GLAMPING|CASA_RURAL)$", message = "El tipo debe ser CABANA, GLAMPING o CASA_RURAL")
     private String tipo;
 
     @Schema(description = "Provincia", example = "Madrid")
@@ -34,14 +35,14 @@ public class AlojamientoCreacionDTO {
 
     @Schema(description = "Latitud", example = "42.64")
     @NotNull(message = "La latitud es obligatoria")
-    @DecimalMin(value = "-90", message = "La latitud tiene que ser mayor o igual a -90")
-    @DecimalMax(value = "90", message = "La latitud tiene que ser menor a 90")
+    @DecimalMin(value = "-90", message = "La latitud tiene que ser mayor o igual que -90")
+    @DecimalMax(value = "90", message = "La latitud tiene que ser menor o igual que 90")
     private Double latitud;
 
     @Schema(description = "Longitud", example = "-0.06")
     @NotNull(message = "La longitud es obligatoria")
-    @DecimalMin(value = "-180", message = "La longitud tiene que ser mayor a -180")
-    @DecimalMax(value = "180", message = "La longitud tiene que ser menor a 180")
+    @DecimalMin(value = "-180", message = "La longitud tiene que ser mayor o igual que -180")
+    @DecimalMax(value = "180", message = "La longitud tiene que ser menor o igual que 180")
     private Double longitud;
 
     @Schema(description = "Precio por noche", example = "85.50")
@@ -69,12 +70,12 @@ public class AlojamientoCreacionDTO {
     @NotNull(message = "El campo certificado eco es obligatorio")
     private Boolean certificadoEco;
 
-    @Schema(description = "Actividades que ofrece el alojamiento", example = "['senderismo','kayak','astroturismo']")
+    @Schema(description = "Actividades que ofrece el alojamiento", example = "[[\"senderismo\", \"kayak\", \"astroturismo\"]]")
     @NotEmpty(message = "Debe tener al menos una actividad")
     private List<String> actividades;
 
     @Schema(description = "Política Sostenible", example = "true")
     @NotNull(message = "El campo Política sostenible es obligatorio")
-    @AssertTrue(message = "Debe ser verdadero")
+    @AssertTrue(message = "Debes aceptar la política de sostenibilidad")
     private Boolean aceptaPoliticaSostenible;
 }

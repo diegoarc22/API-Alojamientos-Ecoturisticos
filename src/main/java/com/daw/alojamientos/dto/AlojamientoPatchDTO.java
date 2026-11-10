@@ -29,13 +29,13 @@ public class AlojamientoPatchDTO {
     private String provincia;
 
     @Schema(description = "Latitud", example = "42.64")
-    @DecimalMin(value = "-90", message = "La latitud tiene que ser mayor o igual a -90")
-    @DecimalMax(value = "90", message = "La latitud tiene que ser menor a 90")
+    @DecimalMin(value = "-90", message = "La latitud tiene que ser mayor o igual que -90")
+    @DecimalMax(value = "90", message = "La latitud tiene que ser menor o igual que 90")
     private Double latitud;
 
     @Schema(description = "Longitud", example = "-0.06")
-    @DecimalMin(value = "-180", message = "La longitud tiene que ser mayor a -180")
-    @DecimalMax(value = "180", message = "La longitud tiene que ser menor a 180")
+    @DecimalMin(value = "-180", message = "La longitud tiene que ser mayor o igual que -180")
+    @DecimalMax(value = "180", message = "La longitud tiene que ser menor o igual que 180")
     private Double longitud;
 
     @Schema(description = "Precio por noche", example = "85.50")
