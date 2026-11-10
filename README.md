@@ -25,5 +25,5 @@ Java 25 · Spring Boot 4.1 · Spring Data JPA · H2 · Bean Validation · Lombok
 
 ## Autores
 
-- Diego
+- Diego A. Rielo Cabrera
 - Jorge Casteleiro Monagas
