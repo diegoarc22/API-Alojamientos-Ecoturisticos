@@ -16,7 +16,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Schema(description = "Alojamiento ecoturistico reistrado en la plataforma", example = "1")
+@Schema(description = "Alojamiento ecoturistico registrado en la plataforma")
 public class Alojamiento {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -70,7 +70,7 @@ public class Alojamiento {
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "alojamiento_actividades", joinColumns = @JoinColumn(name = "alojamiento_id"))
     @Column(name = "actividad")
-    @Schema(description = "Actividades que ofrece el alojamiento" , example = "[\"senderismo\', \"kayak\", \"astroturismo\"]")
+    @Schema(description = "Actividades que ofrece el alojamiento" , example = "[\"senderismo\", \"kayak\", \"astroturismo\"]")
     private List<String> actividades = new ArrayList<>();
 
 }

@@ -38,7 +38,7 @@ public class AlojamientoResumenDTO {
     @Schema(description = "Certificado Ecologico",example = "true")
     private Boolean certificadoEco;
 
-    @Schema(description = "Actividades que ofrece el alojamiento" , example = "[\"senderismo\', \"kayak\", \"astroturismo\"]")
+    @Schema(description = "Actividades que ofrece el alojamiento" , example = "[\"senderismo\", \"kayak\", \"astroturismo\"]")
     private List<String> actividades = new ArrayList<>();
 
 }
