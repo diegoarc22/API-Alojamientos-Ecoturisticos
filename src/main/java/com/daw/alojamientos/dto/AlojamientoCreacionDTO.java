@@ -5,7 +5,6 @@ import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.validator.constraints.Length;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -15,28 +14,28 @@ import java.util.List;
 @AllArgsConstructor
 public class AlojamientoCreacionDTO {
     @Schema(description = "Codigo de Registro", example = "ECO-0001")
-    @NotNull(message = "El código de registro es obligatorio")
-    @Pattern(regexp = "^ECO-\\d{4}$", message = "El código de registro debe comenzar con 'ECO-0000'")
+    @NotBlank(message = "El código de registro es obligatorio")
+    @Pattern(regexp = "^ECO-\\d{4}$", message = "El código de registro debe tener el formato 'ECO-0000'")
     private String codigoRegistro;
 
     @Schema(description = "Nombre del alojamiento",example = "Cabaña Valle de Ordesa" )
     @NotBlank(message = "El nombre es obligatorio")
-    @Length(min = 3, max = 100, message = "El nombre tiene que tener entre 3 y 100 caracteres")
+    @Size(min = 3, max = 100, message = "El nombre tiene que tener entre 3 y 100 caracteres")
     private String nombre;
 
     @Schema(description = "Tipo de Alojamiento", example = "CASA_RURAL")
-    @NotNull(message = "El tipo es obligatorio.")
-    @Pattern(regexp = "^(CABAÑA|GLAMPING|CASA_RURAL)$", message = "El tipo debe ser CABAÑA, GLAMPING o CASA_RURAL")
+    @NotBlank(message = "El tipo es obligatorio")
+    @Pattern(regexp = "^(CABANA|GLAMPING|CASA_RURAL)$", message = "El tipo debe ser CABAÑA, GLAMPING o CASA_RURAL")
     private String tipo;
 
     @Schema(description = "Provincia", example = "Madrid")
-    @NotBlank(message = "La provincia es obligatoria.")
+    @NotBlank(message = "La provincia es obligatoria")
     private String provincia;
 
     @Schema(description = "Latitud", example = "42.64")
-    @NotNull(message = "La latitud es obligatoria.")
-    @DecimalMin(value = "-90", message = "La latitud tiene que ser mayor a -90.")
-    @DecimalMax(value = "90", message = "La latitud tiene que ser menor a 90.")
+    @NotNull(message = "La latitud es obligatoria")
+    @DecimalMin(value = "-90", message = "La latitud tiene que ser mayor o igual a -90")
+    @DecimalMax(value = "90", message = "La latitud tiene que ser menor a 90")
     private Double latitud;
 
     @Schema(description = "Longitud", example = "-0.06")
@@ -53,13 +52,12 @@ public class AlojamientoCreacionDTO {
 
     @Schema(description = "Personas Maximas", example = "6")
     @NotNull(message = "La capacidad es obligatoria")
-    @Positive
     @Min(value = 1, message = "La capacidad mínima es de 1 persona")
     @Max(value = 20, message = "La capacidad máxima es de 20 personas")
     private Integer capacidad;
 
     @Schema(description = "Email del alojamiento", example = "reservas@ordesa.eco")
-    @Email
+    @Email(message = "Debe tener formato de email.")
     private String emailContacto;
 
     @Schema(description = "Fecha de Apertura", example = "2019-05-01")
@@ -67,15 +65,16 @@ public class AlojamientoCreacionDTO {
     @PastOrPresent(message = "La fecha de apertura tiene que ser pasada o presente")
     private LocalDate fechaApertura;
 
-    @Schema(description = "Certificado Ecologico", example = "true")
-    @NotNull
+    @Schema(description = "Certificado Ecológico", example = "true")
+    @NotNull(message = "El campo certificado eco es obligatorio")
     private Boolean certificadoEco;
 
     @Schema(description = "Actividades que ofrece el alojamiento", example = "['senderismo','kayak','astroturismo']")
     @NotEmpty(message = "Debe tener al menos una actividad")
     private List<String> actividades;
 
-    @NotNull
-    @AssertTrue
+    @Schema(description = "Política Sostenible", example = "true")
+    @NotNull(message = "El campo Política sostenible es obligatorio")
+    @AssertTrue(message = "Debe ser verdadero")
     private Boolean aceptaPoliticaSostenible;
 }
