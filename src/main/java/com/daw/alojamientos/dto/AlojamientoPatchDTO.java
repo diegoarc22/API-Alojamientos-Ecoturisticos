@@ -12,6 +12,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Schema(description = "Alojamiento Patch")
 public class AlojamientoPatchDTO {
     @Schema(description = "Codigo de Registro", example = "ECO-0001")
     @Pattern(regexp = "^ECO-\\d{4}$", message = "El código de registro debe tener el formato 'ECO-0000'")
@@ -22,7 +23,7 @@ public class AlojamientoPatchDTO {
     private String nombre;
 
     @Schema(description = "Tipo de Alojamiento", example = "CASA_RURAL")
-    @Pattern(regexp = "^(CABANA|GLAMPING|CASA_RURAL)$", message = "El tipo debe ser CABAÑA, GLAMPING o CASA_RURAL")
+    @Pattern(regexp = "^(CABANA|GLAMPING|CASA_RURAL)$", message = "El tipo debe ser CABANA, GLAMPING o CASA_RURAL")
     private String tipo;
 
     @Schema(description = "Provincia", example = "Madrid")
