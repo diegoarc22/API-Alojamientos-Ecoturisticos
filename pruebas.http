@@ -6,3 +6,151 @@ GET http://localhost:8080/api/alojamientos/entorno
 
 ### [DIEGO] Listar todos
 GET http://localhost:8080/api/alojamientos
+
+### [JORGE] Crear alojamiento válido -> 201
+POST http://localhost:8080/api/alojamientos
+Content-Type: application/json
+
+{
+  "codigoRegistro": "ECO-0100",
+  "nombre": "Casa Rural Sierra de Cazorla",
+  "tipo": "CASA_RURAL",
+  "provincia": "Jaén",
+  "latitud": 37.91,
+  "longitud": -2.93,
+  "precioNoche": 95.0,
+  "capacidad": 8,
+  "emailContacto": "info@cazorla.eco",
+  "fechaApertura": "2018-04-15",
+  "certificadoEco": true,
+  "actividades": ["senderismo", "observacion-aves"],
+  "aceptaPoliticaSostenible": true
+}
+
+### [JORGE] Mismo código de registro otra vez -> 409
+POST http://localhost:8080/api/alojamientos
+Content-Type: application/json
+
+{
+  "codigoRegistro": "ECO-0100",
+  "nombre": "Otro nombre distinto",
+  "tipo": "CASA_RURAL",
+  "provincia": "Jaén",
+  "latitud": 37.91,
+  "longitud": -2.93,
+  "precioNoche": 70.0,
+  "capacidad": 6,
+  "fechaApertura": "2018-04-15",
+  "certificadoEco": false,
+  "actividades": ["senderismo"],
+  "aceptaPoliticaSostenible": true
+}
+
+### [JORGE] Todos los campos mal -> 400 con un error por campo
+POST http://localhost:8080/api/alojamientos
+Content-Type: application/json
+
+{
+  "codigoRegistro": "ECO-1",
+  "nombre": "X",
+  "tipo": "HOTEL",
+  "provincia": "",
+  "latitud": 120,
+  "longitud": -200,
+  "precioNoche": 12345.678,
+  "capacidad": 0,
+  "emailContacto": "no-es-email",
+  "fechaApertura": "2999-01-01",
+  "certificadoEco": true,
+  "actividades": [],
+  "aceptaPoliticaSostenible": false
+}
+
+### [JORGE] Glamping para 10 personas -> 422 (regla de negocio: máximo 4)
+POST http://localhost:8080/api/alojamientos
+Content-Type: application/json
+
+{
+  "codigoRegistro": "ECO-0102",
+  "nombre": "Glamping Lagunas de Ruidera",
+  "tipo": "GLAMPING",
+  "provincia": "Ciudad Real",
+  "latitud": 38.95,
+  "longitud": -2.85,
+  "precioNoche": 120.0,
+  "capacidad": 10,
+  "fechaApertura": "2021-06-01",
+  "certificadoEco": true,
+  "actividades": ["kayak", "astroturismo"],
+  "aceptaPoliticaSostenible": true
+}
+
+### [JORGE] Crear glamping válido (se usa en los PATCH de abajo) -> 201
+POST http://localhost:8080/api/alojamientos
+Content-Type: application/json
+
+{
+  "codigoRegistro": "ECO-0101",
+  "nombre": "Glamping Lagunas de Ruidera",
+  "tipo": "GLAMPING",
+  "provincia": "Ciudad Real",
+  "latitud": 38.95,
+  "longitud": -2.85,
+  "precioNoche": 120.0,
+  "capacidad": 2,
+  "fechaApertura": "2021-06-01",
+  "certificadoEco": true,
+  "actividades": ["kayak", "astroturismo"],
+  "aceptaPoliticaSostenible": true
+}
+
+> {% client.global.set("idGlamping", response.body.id); %}
+
+### [JORGE] PATCH que deja el glamping para 10 personas -> 422
+PATCH http://localhost:8080/api/alojamientos/{{idGlamping}}
+Content-Type: application/json
+
+{
+  "capacidad": 10
+}
+
+### [JORGE] PATCH con un precio negativo -> 400
+PATCH http://localhost:8080/api/alojamientos/{{idGlamping}}
+Content-Type: application/json
+
+{
+  "precioNoche": -5
+}
+
+### [JORGE] GET de un id que no existe -> 404
+GET http://localhost:8080/api/alojamientos/99
+
+### [JORGE] PUT de un id que no existe -> 404
+PUT http://localhost:8080/api/alojamientos/99
+Content-Type: application/json
+
+{
+  "codigoRegistro": "ECO-0199",
+  "nombre": "No existe",
+  "tipo": "CABANA",
+  "provincia": "Huesca",
+  "latitud": 42.64,
+  "longitud": -0.06,
+  "precioNoche": 80.0,
+  "capacidad": 4,
+  "fechaApertura": "2019-05-01",
+  "certificadoEco": true,
+  "actividades": ["senderismo"],
+  "aceptaPoliticaSostenible": true
+}
+
+### [JORGE] PATCH de un id que no existe -> 404
+PATCH http://localhost:8080/api/alojamientos/99
+Content-Type: application/json
+
+{
+  "precioNoche": 70.0
+}
+
+### [JORGE] DELETE de un id que no existe -> 404
+DELETE http://localhost:8080/api/alojamientos/99
