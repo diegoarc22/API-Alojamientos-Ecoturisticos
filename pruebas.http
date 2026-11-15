@@ -1,4 +1,4 @@
-
+### Pruebas de la API de alojamientos ecoturísticos: casos de éxito y de error
 
 ###  Entorno activo -> 200
 GET http://localhost:8080/api/alojamientos/entorno
