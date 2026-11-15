@@ -1,8 +1,71 @@
 ### Fichero de pruebas de la practica final (rubrica: TODOS los casos de exito y de error)
 ### Cada uno anade aqui las peticiones de su parte. Separar con ###
 
-### [DIEGO] Entorno activo
+### [DIEGO] Entorno activo -> 200
 GET http://localhost:8080/api/alojamientos/entorno
 
-### [DIEGO] Listar todos
+### [DIEGO] Crear alojamiento valido -> 201
+POST http://localhost:8080/api/alojamientos
+Content-Type: application/json
+
+{
+  "codigoRegistro": "ECO-0001",
+  "nombre": "Cabana Valle de Ordesa",
+  "tipo": "CABANA",
+  "provincia": "Huesca",
+  "latitud": 42.64,
+  "longitud": -0.06,
+  "precioNoche": 75.50,
+  "capacidad": 6,
+  "emailContacto": "reservas@ordesa.eco",
+  "fechaApertura": "2019-05-01",
+  "certificadoEco": true,
+  "actividades": ["senderismo", "kayak", "astroturismo"],
+  "aceptaPoliticaSostenible": true
+}
+
+### [DIEGO] Listar todos -> 200
 GET http://localhost:8080/api/alojamientos
+
+### [DIEGO] Buscar por id -> 200
+GET http://localhost:8080/api/alojamientos/1
+
+### [DIEGO] Buscar por provincia -> 200
+GET http://localhost:8080/api/alojamientos/buscar?provincia=Huesca
+
+### [DIEGO] Buscar por precio maximo -> 200
+GET http://localhost:8080/api/alojamientos/precio-maximo?max=80
+
+### [DIEGO] Buscar con certificado eco -> 200
+GET http://localhost:8080/api/alojamientos/certificados
+
+### [DIEGO] Actualizar completo (PUT) -> 200
+PUT http://localhost:8080/api/alojamientos/1
+Content-Type: application/json
+
+{
+  "codigoRegistro": "ECO-0001",
+  "nombre": "Cabana Valle de Ordesa Renovada",
+  "tipo": "CABANA",
+  "provincia": "Huesca",
+  "latitud": 42.64,
+  "longitud": -0.06,
+  "precioNoche": 90.00,
+  "capacidad": 8,
+  "emailContacto": "reservas@ordesa.eco",
+  "fechaApertura": "2019-05-01",
+  "certificadoEco": true,
+  "actividades": ["senderismo", "kayak"],
+  "aceptaPoliticaSostenible": true
+}
+
+### [DIEGO] Actualizar solo el precio (PATCH) -> 200
+PATCH http://localhost:8080/api/alojamientos/1
+Content-Type: application/json
+
+{
+  "precioNoche": 70.00
+}
+
+### [DIEGO] Eliminar -> 204
+DELETE http://localhost:8080/api/alojamientos/1

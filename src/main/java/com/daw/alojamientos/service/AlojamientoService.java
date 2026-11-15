@@ -133,7 +133,7 @@ public class AlojamientoService {
 
         if(capacidad > maximo){
             throw new ReglaNegocioException(
-                    "Un" + tipo + " admite como máximo " + maximo + " personas (has indicado " + capacidad + ")"
+                    "Un " + tipo + " admite como máximo " + maximo + " personas (has indicado " + capacidad + ")"
             );
         }
     }
