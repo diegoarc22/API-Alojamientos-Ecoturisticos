@@ -1,15 +1,25 @@
 package com.daw.alojamientos.config;
 
 import org.springframework.cache.annotation.EnableCaching;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.client.SimpleClientHttpRequestFactory;
+import org.springframework.web.client.RestClient;
 
-/*
- * TODO [DIEGO - Bloque 5]
- * @Configuration con un @Bean RestClient con timeouts (connect 3 s, read 5 s).
- * Modelo: Ejercicios-resueltos/10-novedades-proyecto-final/.../config/RestClientConfig.java
- */
+import java.time.Duration;
+
 @Configuration
 @EnableCaching
 public class RestClientConfig {
 
+    @Bean
+    public RestClient restClient() {
+        SimpleClientHttpRequestFactory factory = new SimpleClientHttpRequestFactory();
+        factory.setConnectTimeout(Duration.ofSeconds(3));
+        factory.setReadTimeout(Duration.ofSeconds(5));
+
+        return RestClient.builder()
+                .requestFactory(factory)
+                .build();
+    }
 }

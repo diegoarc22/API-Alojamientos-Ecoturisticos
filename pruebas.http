@@ -1,11 +1,89 @@
 ### Fichero de pruebas de la practica final (rubrica: TODOS los casos de exito y de error)
 ### Cada uno anade aqui las peticiones de su parte. Separar con ###
 
-### [DIEGO] Entorno activo
+### [DIEGO] Entorno activo -> 200
 GET http://localhost:8080/api/alojamientos/entorno
 
-### [DIEGO] Listar todos
+### [DIEGO] Listar todos -> 200
 GET http://localhost:8080/api/alojamientos
+
+### [DIEGO] Buscar por id -> 200
+GET http://localhost:8080/api/alojamientos/1
+
+### [DIEGO] Buscar por provincia -> 200
+GET http://localhost:8080/api/alojamientos/buscar?provincia=Huesca
+
+### [DIEGO] Buscar por precio maximo -> 200
+GET http://localhost:8080/api/alojamientos/precio-maximo?max=90
+
+### [DIEGO] Buscar con certificado eco -> 200
+GET http://localhost:8080/api/alojamientos/certificados
+
+### [DIEGO] Crear alojamiento valido -> 201
+POST http://localhost:8080/api/alojamientos
+Content-Type: application/json
+
+{
+  "codigoRegistro": "ECO-0200",
+  "nombre": "Cabana Bosque de Irati",
+  "tipo": "CABANA",
+  "provincia": "Navarra",
+  "latitud": 43.00,
+  "longitud": -1.10,
+  "precioNoche": 80.00,
+  "capacidad": 6,
+  "emailContacto": "reservas@irati.eco",
+  "fechaApertura": "2022-03-10",
+  "certificadoEco": true,
+  "actividades": ["senderismo", "ciclismo", "astroturismo"],
+  "aceptaPoliticaSostenible": true
+}
+
+### [DIEGO] Actualizar completo el 2 (PUT) -> 200
+PUT http://localhost:8080/api/alojamientos/2
+Content-Type: application/json
+
+{
+  "codigoRegistro": "ECO-0002",
+  "nombre": "Glamping Sierra de Gredos",
+  "tipo": "GLAMPING",
+  "provincia": "Ávila",
+  "latitud": 40.26,
+  "longitud": -5.11,
+  "precioNoche": 120.00,
+  "capacidad": 4,
+  "emailContacto": "claudio2026@daw.es",
+  "fechaApertura": "2023-11-17",
+  "certificadoEco": true,
+  "actividades": ["senderismo", "astroturismo"],
+  "aceptaPoliticaSostenible": true
+}
+
+### [DIEGO] Cambiar solo el precio del 3 (PATCH) -> 200
+PATCH http://localhost:8080/api/alojamientos/3
+Content-Type: application/json
+
+{
+  "precioNoche": 130.00
+}
+
+### [DIEGO] Eliminar el 5 -> 204
+DELETE http://localhost:8080/api/alojamientos/5
+
+### [DIEGO] Prevision del 1 (3 dias por defecto) -> 200
+GET http://localhost:8080/api/alojamientos/1/prevision
+
+### [DIEGO] Prevision del 1 otra vez (sale de la cache, mucho mas rapida) -> 200
+GET http://localhost:8080/api/alojamientos/1/prevision
+
+### [DIEGO] Prevision del 1 a 7 dias -> 200
+GET http://localhost:8080/api/alojamientos/1/prevision?dias=7
+
+### [DIEGO] Prevision con dias fuera de rango -> 422
+GET http://localhost:8080/api/alojamientos/1/prevision?dias=10
+
+### [DIEGO] Prevision de un id que no existe -> 404
+GET http://localhost:8080/api/alojamientos/99/prevision
 
 ### [JORGE] Crear alojamiento válido -> 201
 POST http://localhost:8080/api/alojamientos

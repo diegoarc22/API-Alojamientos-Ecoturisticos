@@ -2,11 +2,15 @@ package com.daw.alojamientos.service;
 
 import com.daw.alojamientos.dto.AlojamientoCreacionDTO;
 import com.daw.alojamientos.dto.AlojamientoPatchDTO;
+import com.daw.alojamientos.dto.AlojamientoPrevisionDTO;
 import com.daw.alojamientos.dto.AlojamientoResumenDTO;
+import com.daw.alojamientos.dto.PrevisionDiaDTO;
 import com.daw.alojamientos.exception.RecursoNoEncontradoException;
 import com.daw.alojamientos.exception.ReglaNegocioException;
 import com.daw.alojamientos.model.Alojamiento;
 import com.daw.alojamientos.repository.AlojamientoRepository;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -16,8 +20,11 @@ import java.util.List;
 @Service
 public class AlojamientoService {
     private final AlojamientoRepository alojamientoRepository;
-    public AlojamientoService(AlojamientoRepository alojamientoRepository) {
+    private final ExternalApiService externalApiService;
+
+    public AlojamientoService(AlojamientoRepository alojamientoRepository, ExternalApiService externalApiService) {
         this.alojamientoRepository = alojamientoRepository;
+        this.externalApiService = externalApiService;
     }
 
     private AlojamientoResumenDTO aResumen(Alojamiento alojamiento){
@@ -63,6 +70,7 @@ public class AlojamientoService {
         return aResumen(alojamiento);
     }
 
+    @CacheEvict(value = "prevision", allEntries = true)
     public AlojamientoResumenDTO crear(AlojamientoCreacionDTO dto){
         comprobarCapacidad(dto.getTipo(), dto.getCapacidad());
         Alojamiento alojamiento = new Alojamiento();
@@ -71,6 +79,7 @@ public class AlojamientoService {
         return aResumen(alojamientoRepository.save(alojamiento));
     }
 
+    @CacheEvict(value = "prevision", allEntries = true)
     public AlojamientoResumenDTO actualizar(Long id, AlojamientoCreacionDTO dto){
         Alojamiento alojamiento = obtenerEntidad(id);
         comprobarCapacidad(dto.getTipo(), dto.getCapacidad());
@@ -79,6 +88,7 @@ public class AlojamientoService {
         return aResumen(alojamientoRepository.save(alojamiento));
     }
 
+    @CacheEvict(value = "prevision", allEntries = true)
     public void eliminar(Long id){
         Alojamiento alojamiento = obtenerEntidad(id);
         alojamientoRepository.delete(alojamiento);
@@ -133,11 +143,12 @@ public class AlojamientoService {
 
         if(capacidad > maximo){
             throw new ReglaNegocioException(
-                    "Un" + tipo + " admite como máximo " + maximo + " personas (has indicado " + capacidad + ")"
+                    "Un " + tipo + " admite como máximo " + maximo + " personas (has indicado " + capacidad + ")"
             );
         }
     }
 
+    @CacheEvict(value = "prevision", allEntries = true)
     public AlojamientoResumenDTO actualizarParcial(Long id, AlojamientoPatchDTO dto) {
         Alojamiento alojamiento = obtenerEntidad(id);
 
@@ -158,5 +169,54 @@ public class AlojamientoService {
         comprobarCapacidad(alojamiento.getTipo(), alojamiento.getCapacidad());
 
         return aResumen(alojamientoRepository.save(alojamiento));
+    }
+
+    @Cacheable(value = "prevision", key = "#id + '-' + #dias", unless = "#result.datosEnVivo == false")
+    public AlojamientoPrevisionDTO obtenerPrevision(Long id, int dias) {
+        if (dias < 1 || dias > 7) {
+            throw new ReglaNegocioException(
+                    "Los días de previsión tienen que estar entre 1 y 7 (has indicado " + dias + ")");
+        }
+
+        Alojamiento alojamiento = obtenerEntidad(id);
+        List<PrevisionDiaDTO> prevision = externalApiService.obtenerPrevision(
+                alojamiento.getLatitud(), alojamiento.getLongitud(), dias);
+        boolean datosEnVivo = !prevision.isEmpty();
+
+        AlojamientoPrevisionDTO dto = new AlojamientoPrevisionDTO();
+        dto.setId(alojamiento.getId());
+        dto.setNombre(alojamiento.getNombre());
+        dto.setProvincia(alojamiento.getProvincia());
+        dto.setLatitud(alojamiento.getLatitud());
+        dto.setLongitud(alojamiento.getLongitud());
+        dto.setActividades(new ArrayList<>(alojamiento.getActividades()));
+        dto.setPrevision(prevision);
+        dto.setDatosEnVivo(datosEnVivo);
+        dto.setFuente(datosEnVivo ? "Open-Meteo" : "Sin conexión con Open-Meteo");
+        dto.setActividadesRecomendadas(recomendarActividades(alojamiento.getActividades(), prevision));
+
+        return dto;
+    }
+
+    private List<String> recomendarActividades(List<String> actividades, List<PrevisionDiaDTO> prevision) {
+        // Sin prevision (fallback) no se recomiendan las de exterior, por prudencia
+        boolean buenTiempo = !prevision.isEmpty();
+        for (PrevisionDiaDTO dia : prevision) {
+            if (dia.getProbabilidadLluvia() != null && dia.getProbabilidadLluvia() > 70) {
+                buenTiempo = false;
+            }
+        }
+
+        List<String> recomendadas = new ArrayList<>();
+        for (String actividad : actividades) {
+            switch (actividad) {
+                case "astroturismo", "taller-huerto" -> recomendadas.add(actividad);
+                case "senderismo", "kayak", "ciclismo", "observacion-aves" -> {
+                    if (buenTiempo) recomendadas.add(actividad);
+                }
+                default -> { }
+            }
+        }
+        return recomendadas;
     }
 }
